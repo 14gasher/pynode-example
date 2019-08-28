@@ -13,7 +13,7 @@
 2. Install Node, Python, and yarn
 3. Run `yarn` in this project directory
 4. Run `yarn start`
-5. In a browser, type in `localhost:3333/1/+/2`, and ensure the browser spits out `3`
+5. In a browser, type in `localhost:3333/1/plus/2`, and ensure the browser spits out `3`
 
 # Introduction
 
