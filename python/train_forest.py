@@ -24,14 +24,18 @@ def evaluateForest(rf, valid_data, valid_targets):
 
 def convert_to_np(data_uri):
   header, encoded = data_uri.split(",", 1)
+  # get the extension
   extension = header.split(";", 1)[0]
   extension = extension.split("/", 1)[1]
+  # write to a temporary file
   path = "tmp/img." + extension
   data = b64decode(encoded)
   with open(path, "wb") as f:
     f.write(data)
+  # read in the file through cv2
   img = cv2.imread(path) / float(255)
-  return img.reshape(img.size) # flatten the array
+  # flatten the array for the random forest
+  return img.reshape(img.size) 
 
 def get_training_data():
   data = nodeWrapper.read_input()
@@ -48,10 +52,13 @@ def get_training_data():
   return train_test_split(images, targets, random_state=randint(0, 1000))
 
 def main():
+  # Get Training Data
   trainX, validX, trainY, validY = get_training_data()
+  # Train a Forest
   forest = trainForest(trainX, trainY)
+  # Save the Forest
   saveForest(forest)
-
+  # Send back the accuracy of the trained Forest
   nodeWrapper.send_output_as_json({
     "accuracy": evaluateForest(forest, validX, validY)
   })
