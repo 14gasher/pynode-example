@@ -7,13 +7,18 @@
 ```
 ##### Looking at how python and node can play together
 
-# Installation
+# Installation and Use
 
 1. Clone this repo
 2. Install Node, Python, and yarn
 3. Run `yarn` in this project directory
 4. Run `yarn start`
 5. In a browser, type in `localhost:3333/1/plus/2`, and ensure the browser spits out `3`
+6. Next, navigate to `localhost:3333`
+7. Click on the generate labelled data button and follow the prompts
+8. Click on the generate unlabelled data button and follow the prompts
+9. Click on train
+10. Click on predict
 
 # Introduction
 
@@ -98,8 +103,11 @@ def send_output_as_json(obj):
   return
 ```
 
-# Next Steps
+# Machine Learning with Node and Python
 
-This is the first version of this repo.
-Version 2 (coming soon), will take this first
-look and extend it to start using machine learning methods.
+Once the above is understood, it is relatively simple to create a web-based machine learning system.
+1. Create the python scripts needed to generate your model.
+2. Call those python scripts from Node within either a route or a socket
+3. Enjoy the beautiful creation you've brought to life.
+
+Happy hacking!
