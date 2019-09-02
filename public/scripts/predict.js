@@ -7,22 +7,34 @@
     title: 'Predicting',
   })
 
+  const predictionOutput = ComponentGenerator.PredictionOutput()
+
   socketConnection.addListener.predict(data => {
     socketOutput.addSocketMessage(data)
-    console.log(socketOutput)
+    if (data.hasOwnProperty('predictions')) {
+      predictionOutput.generate({
+        input: ImageData.getPredictData(),
+        predictions: data.predictions,
+        classifiers: a => {
+          switch(a){
+            case 0: return 'Open Eyes'
+            case 1: return 'Closed Eyes'
+            default: return 'Unknown Class'
+          }
+        }
+      })
+    }
   })
 
   const button = ComponentGenerator.Button({
     label: 'Predict',
-    disabled: Data_URIs.isReady(),
+    disabled: false,
     onClick: () => {
       socketOutput.clearSocketInfo()
-      console.log(socketOutput)
-      socketConnection.predictWithData(Data_URIs.data)
+      socketConnection.predictWithData(ImageData.getPredictData())
     }
   })
 
-  section.addComponents([socketOutput, button])
+  section.addComponents([socketOutput, button, predictionOutput])
   ComponentGenerator.App.appendComponent(section)
-  Data_URIs.addReadyListener(() => button.unDisable())
 })()

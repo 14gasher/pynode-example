@@ -1,7 +1,7 @@
 const path = require('path')
 const express = require('express')
 const app = express()
-const server = require('http').Server(app)
+const server = require('http').Server(app) // NOTE: This is unusual, but needed for Socket.io
 const io = require('socket.io')(server)
 const bodyParser = require('body-parser')
 

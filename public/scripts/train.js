@@ -1,6 +1,4 @@
 (() => {
-  const data_uri = Data_URIs.data
-
   const section = ComponentGenerator.Grid({
     flexDirection: 'column',
   })
@@ -15,26 +13,12 @@
 
   const button = ComponentGenerator.Button({
     label: 'Train',
-    disabled: Data_URIs.isReady(),
+    disabled: false,
     onClick: () => {
       socketOutput.clearSocketInfo()
-      socketConnection.trainWithData({
-        open: [
-          data_uri[0],
-          data_uri[0],
-          data_uri[0],
-          data_uri[0],
-        ],
-        closed: [
-          data_uri[1],
-          data_uri[1],
-          data_uri[1],
-          data_uri[1],
-        ],
-      })
+      socketConnection.trainWithData(ImageData.getTrainingData())
     }
   })
   section.addComponents([socketOutput, button])
   ComponentGenerator.App.appendComponent(section)
-  Data_URIs.addReadyListener(() => button.unDisable())
 })()
