@@ -2,12 +2,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from random import randint
 import numpy as np
-import cv2
 import pickle
-from base64 import b64decode
 from sklearn.model_selection import train_test_split
 
 import nodeWrapper
+import dataLoader
 
 def saveForest(forest):
   with open('models/rf.pck', 'wb') as fp:
@@ -22,26 +21,11 @@ def evaluateForest(rf, valid_data, valid_targets):
   predictions = rf.predict(valid_data)
   return accuracy_score(valid_targets, predictions)
 
-def convert_to_np(data_uri):
-  header, encoded = data_uri.split(",", 1)
-  # get the extension
-  extension = header.split(";", 1)[0]
-  extension = extension.split("/", 1)[1]
-  # write to a temporary file
-  path = "tmp/img." + extension
-  data = b64decode(encoded)
-  with open(path, "wb") as f:
-    f.write(data)
-  # read in the file through cv2
-  img = cv2.imread(path) / float(255)
-  # flatten the array for the random forest
-  return img.reshape(img.size) 
-
 def get_training_data():
   data = nodeWrapper.read_input()
   # Get data formatted correctly
-  open_images = [convert_to_np(img) for img in data['open']]
-  closed_images = [convert_to_np(img) for img in data['closed']]
+  open_images = dataLoader.convert_all_to_np(data['open'])
+  closed_images = dataLoader.convert_all_to_np(data['closed'])
   # Generate labels
   open_targets = np.zeros([len(open_images)])
   closed_targets = np.ones([len(closed_images)])
@@ -53,10 +37,13 @@ def get_training_data():
 
 def main():
   # Get Training Data
+  nodeWrapper.send_output_as_json({'status': 'Getting Training Data'})
   trainX, validX, trainY, validY = get_training_data()
   # Train a Forest
+  nodeWrapper.send_output_as_json({'status': 'Training Forest'})
   forest = trainForest(trainX, trainY)
   # Save the Forest
+  nodeWrapper.send_output_as_json({'status': 'Saving Forest'})
   saveForest(forest)
   # Send back the accuracy of the trained Forest
   nodeWrapper.send_output_as_json({

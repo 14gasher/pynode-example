@@ -3,18 +3,25 @@ const { spawn } = require('child_process')
 module.exports = ({
   path,
   arguments,
+  onData = () => {},
+  onError = () => {},
 }) => new Promise((resolve, reject) => {
   const python = spawn('python', [path])
-  let pythonResponse
   python.stdout.on('data', (data) => {
-    pythonResponse = JSON.parse(data.toString())
+    const d = data.toString()
+    try {
+      onData(JSON.parse(d))
+    } catch(e) {
+      onData(d)
+    }
   })
   python.stderr.on('data', (data) => {
     const error = data.toString()
-    reject({error: 'Python Error:\n' + error})
+    console.error(error)
+    onError(error)
   })
   python.stdout.on('end', () => {
-    resolve(pythonResponse)
+    resolve()
   })
   python.stdin.write(JSON.stringify(arguments))
   python.stdin.end()

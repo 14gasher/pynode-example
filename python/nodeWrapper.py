@@ -9,10 +9,12 @@ def read_input():
 
 
 def send_output_as_json(obj):
-  print(json.dumps(obj))
+  sys.stdout.write(json.dumps(obj))
+  sys.stdout.flush()
   return
 
 
 def send_output_as_text(data):
-  print(data)
+  sys.stdout.write(data)
+  sys.stdout.flush()
   return
